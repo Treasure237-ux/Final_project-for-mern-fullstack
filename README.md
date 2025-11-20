@@ -148,16 +148,6 @@ cd backend
 npm install
 ```
 
-Create a `.env` file in the `backend` directory:
-
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/smartquiz
-JWT_SECRET=your_super_secret_jwt_key_here
-OPENAI_API_KEY=your_openai_api_key_here
-NODE_ENV=development
-```
-
 ### Step 3: Frontend Setup
 
 ```bash
