@@ -1,6 +1,6 @@
 # 🎯 SmartQuiz - AI-Powered Quiz Generator
 
-A complete MERN stack application for creating and taking AI-generated quizzes. Built with React, Node.js, Express, MongoDB, and OpenAI API.
+A complete MERN stack application for creating and taking AI-generated quizzes. Built with React, Node.js, Express, MongoDB, and Groq AI API.
 
 ![MERN Stack](https://img.shields.io/badge/Stack-MERN-green)
 ![License](https://img.shields.io/badge/License-ISC-blue)
@@ -26,7 +26,7 @@ A complete MERN stack application for creating and taking AI-generated quizzes. 
 - Secure password hashing with bcrypt
 
 ### Quiz Generation
-- AI-powered quiz generation using OpenAI
+- AI-powered quiz generation using Groq
 - Generate 10 MCQ questions per topic
 - Custom topic title and description
 - Automatic question formatting
@@ -59,7 +59,7 @@ A complete MERN stack application for creating and taking AI-generated quizzes. 
 - **Mongoose** - ODM
 - **JWT** - Authentication
 - **bcryptjs** - Password hashing
-- **OpenAI API** - AI quiz generation
+- **Groq AI API** - AI quiz generation
 - **Morgan** - HTTP request logger
 - **CORS** - Cross-origin resource sharing
 
@@ -131,7 +131,7 @@ SmartQuiz/
 
 - Node.js (v16 or higher)
 - MongoDB (local or cloud instance)
-- OpenAI API key
+- Groq API key
 - npm or yarn
 
 ### Step 1: Clone the Repository
@@ -182,7 +182,7 @@ The application will be available at:
 | `PORT` | Server port number | No (default: 5000) |
 | `MONGODB_URI` | MongoDB connection string | Yes |
 | `JWT_SECRET` | Secret key for JWT tokens | Yes |
-| `OPENAI_API_KEY` | OpenAI API key | Yes |
+| `GROQ_API_KEY` | Groq API key | Yes |
 | `NODE_ENV` | Environment (development/production) | No |
 
 ### Example MongoDB URI Formats
@@ -418,7 +418,7 @@ cd backend
 heroku create smartquiz-api
 heroku config:set MONGODB_URI=your_mongodb_uri
 heroku config:set JWT_SECRET=your_jwt_secret
-heroku config:set OPENAI_API_KEY=your_openai_key
+heroku config:set GROQ_API_KEY=your_groq_key
 git push heroku main
 ```
 
@@ -446,7 +446,7 @@ Make sure to set:
 - `NODE_ENV=production`
 - Secure `JWT_SECRET` (use a strong random string)
 - Valid MongoDB connection string
-- Valid OpenAI API key
+- Valid Groq API key
 
 ## 🧪 Testing
 
@@ -473,8 +473,8 @@ Make sure to set:
 - Check `MONGODB_URI` in `.env`
 - Verify network connectivity
 
-**OpenAI API Error**
-- Verify `OPENAI_API_KEY` is correct
+**Groq API Error**
+- Verify `GROQ_API_KEY` is correct
 - Check API key has sufficient credits
 - Ensure internet connection
 
@@ -523,7 +523,7 @@ Built with ❤️ using the MERN stack
 
 ## 🙏 Acknowledgments
 
-- OpenAI for the GPT API
+- Groq for the GPT API
 - MongoDB for the database
 - React and Express communities
 - TailwindCSS for styling

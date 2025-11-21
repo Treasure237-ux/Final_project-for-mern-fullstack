@@ -1,12 +1,26 @@
 import Topic from '../models/Topic.js';
-import OpenAI from 'openai';
+import { generateObject } from 'ai';
+import { groq } from '@ai-sdk/groq';
+import { z } from 'zod';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+// Define the schema for quiz questions using Zod
+const QuizSchema = z.object({
+  questions: z.array(
+    z.object({
+      question: z.string(),
+      options: z.object({
+        A: z.string(),
+        B: z.string(),
+        C: z.string(),
+        D: z.string()
+      }),
+      correctAnswer: z.enum(['A', 'B', 'C', 'D'])
+    })
+  )
 });
 
 /**
- * Generate quiz questions using OpenAI API
+ * Generate quiz questions using Groq AI API with @ai-sdk/groq
  * @route POST /api/topic/generate
  * @access Private
  */
@@ -23,15 +37,15 @@ export const generateQuestions = async (req, res) => {
       });
     }
 
-    // Check if OpenAI API key is configured
-    if (!process.env.OPENAI_API_KEY) {
+    // Check if Groq API key is configured
+    if (!process.env.GROQ_API_KEY) {
       return res.status(500).json({
         success: false,
-        message: 'OpenAI API key is not configured'
+        message: 'Groq API key is not configured'
       });
     }
 
-    // Create prompt for OpenAI
+    // Create prompt for Groq
     const prompt = `Generate exactly 10 multiple choice questions (MCQ) based on the following topic:
 
 Topic Title: ${title}
@@ -41,65 +55,26 @@ Requirements:
 - Generate exactly 10 questions
 - Each question should have 4 options labeled A, B, C, and D
 - Each question should have one correct answer (A, B, C, or D)
-- Questions should be well-formatted and educational
-- Return the response in the following JSON format:
-{
-  "questions": [
-    {
-      "question": "Question text here?",
-      "options": {
-        "A": "Option A text",
-        "B": "Option B text",
-        "C": "Option C text",
-        "D": "Option D text"
-      },
-      "correctAnswer": "A"
-    }
-  ]
-}
+- Questions should be well-formatted and educational`;
 
-Return ONLY valid JSON, no additional text or markdown formatting.`;
-
-    // Call OpenAI API
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are a helpful assistant that generates educational multiple choice questions. Always return valid JSON format only.'
-        },
-        {
-          role: 'user',
-          content: prompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 2000
+    // Call Groq AI API using @ai-sdk/groq and generateObject
+    const { object } = await generateObject({
+      model: groq('mixtral-8x7b-32768'),
+      schema: QuizSchema,
+      prompt,
+      temperature: 0.7
     });
 
-    // Parse the response
-    const responseContent = completion.choices[0].message.content.trim();
-    
-    // Remove markdown code blocks if present
-    let jsonContent = responseContent;
-    if (responseContent.startsWith('```json')) {
-      jsonContent = responseContent.replace(/```json\n?/g, '').replace(/```\n?/g, '');
-    } else if (responseContent.startsWith('```')) {
-      jsonContent = responseContent.replace(/```\n?/g, '');
-    }
-
-    const parsedResponse = JSON.parse(jsonContent);
-
     // Validate the response structure
-    if (!parsedResponse.questions || !Array.isArray(parsedResponse.questions)) {
+    if (!object.questions || !Array.isArray(object.questions)) {
       return res.status(500).json({
         success: false,
-        message: 'Invalid response format from OpenAI'
+        message: 'Invalid response format from Groq'
       });
     }
 
     // Ensure we have exactly 10 questions
-    const questions = parsedResponse.questions.slice(0, 10).map(q => ({
+    const questions = object.questions.slice(0, 10).map(q => ({
       question: q.question,
       options: {
         A: q.options.A,
@@ -131,13 +106,6 @@ Return ONLY valid JSON, no additional text or markdown formatting.`;
     });
   } catch (error) {
     console.error('Error generating questions:', error);
-    
-    if (error instanceof SyntaxError) {
-      return res.status(500).json({
-        success: false,
-        message: 'Failed to parse OpenAI response. Please try again.'
-      });
-    }
 
     res.status(500).json({
       success: false,
