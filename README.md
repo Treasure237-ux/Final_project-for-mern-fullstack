@@ -332,12 +332,14 @@ Authorization: Bearer <token>
     "title": "JavaScript Fundamentals",
     "description": "Basic concepts of JavaScript programming",
     "questions": [
-      // Array of questions with options and correct answers
+      // Array of questions with options only (correct answers are NOT included when fetching the quiz)
     ],
     "createdAt": "2024-01-01T00:00:00.000Z"
   }
 }
 ```
+
+> Note: The GET /api/topic/:id endpoint intentionally omits the `correctAnswer` field so that users taking the quiz cannot see the answers. To submit answers for grading, use the Submit Quiz endpoint described below.
 
 #### Get Statistics
 ```http
@@ -375,6 +377,44 @@ GET /api/health
   "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
+
+### Submit Quiz (grade answers)
+
+```http
+POST /api/topic/:id/submit
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "answers": {
+    "0": "A",
+    "1": "C",
+    // ...
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "score": 8,
+  "total": 10,
+  "results": [
+    {
+      "question": "...",
+      "options": { "A": "...", "B": "...", "C": "...", "D": "..." },
+      "correctAnswer": "B",
+      "userAnswer": "A",
+      "isCorrect": false
+    }
+    // ...
+  ]
+}
+```
+
+This endpoint grades the submitted answers server-side and returns the per-question results along with the correct answers (safe to include after grading).
 
 ## 💻 Usage
 

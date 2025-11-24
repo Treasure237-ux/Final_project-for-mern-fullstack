@@ -56,6 +56,20 @@ function Footer() {
             <p className="text-gray-600 dark:text-gray-400 text-sm">
               Have questions? We'd love to hear from you.
             </p>
+            <div className="mt-3 text-sm text-gray-600 dark:text-gray-400 space-y-1">
+              <div>
+                <span className="font-semibold">Email:</span>{' '}
+                <a href="mailto:tboyokirhie@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline">tboyokirhie@gmail.com</a>
+              </div>
+              <div>
+                <span className="font-semibold">GitHub:</span>{' '}
+                <a href="https://github.com/Treasure237-ux" target="_blank" rel="noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">github.com/Treasure237-ux</a>
+              </div>
+              <div>
+                <span className="font-semibold">Discord:</span>{' '}
+                <span className="text-gray-600 dark:text-gray-300">@okirhie_treasure</span>
+              </div>
+            </div>
           </div>
         </div>
 

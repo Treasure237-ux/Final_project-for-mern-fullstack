@@ -53,8 +53,7 @@ function TakeQuiz() {
     if (currentQuestionIndex < topic.questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      calculateScore();
-      setShowResults(true);
+      submitAnswers();
     }
   };
 
@@ -66,12 +65,32 @@ function TakeQuiz() {
 
   const calculateScore = () => {
     let correct = 0;
+    // Deprecated: server now grades the quiz. Keep for fallback only.
     topic.questions.forEach((question, index) => {
       if (answers[index] === question.correctAnswer) {
         correct++;
       }
     });
     setScore(correct);
+  };
+
+  const submitAnswers = async () => {
+    try {
+      setLoading(true);
+      const response = await api.post(`/topic/${id}/submit`, { answers });
+      if (response.data.success) {
+        // server returns graded topic with correct answers
+        setTopic(response.data.topic);
+        setScore(response.data.score);
+        setShowResults(true);
+      } else {
+        showError(response.data.message || 'Failed to submit answers');
+      }
+    } catch (err) {
+      showError(err.response?.data?.message || 'Failed to submit answers');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleRestart = () => {
