@@ -9,7 +9,7 @@ import { groq } from '@ai-sdk/groq';
  */
 export const generateQuestions = async (req, res) => {
   try {
-    const { title, description } = req.body;
+    const { title, description, numberOfQuestions: numQuestionsInput } = req.body;
     const userId = req.user._id;
 
     // Validation
@@ -17,6 +17,17 @@ export const generateQuestions = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: 'Please provide both title and description'
+      });
+    }
+
+    // Validate and set number of questions, default to 10
+    const numberOfQuestions = numQuestionsInput ? parseInt(numQuestionsInput, 10) : 10;
+
+    // Add range validation for the number of questions
+    if (isNaN(numberOfQuestions) || numberOfQuestions < 1 || numberOfQuestions > 20) {
+      return res.status(400).json({
+        success: false,
+        message: 'Number of questions must be between 1 and 20.'
       });
     }
 
@@ -29,7 +40,7 @@ export const generateQuestions = async (req, res) => {
     }
 
     // Create prompt for Groq
-    const prompt = `Generate exactly 10 multiple choice questions (MCQ) based on the following topic:
+    const prompt = `Generate exactly ${numberOfQuestions} multiple choice questions (MCQ) based on the following topic:
 
 Topic Title: ${title}
 Topic Description: ${description}
@@ -51,7 +62,7 @@ Return ONLY valid JSON in this exact format, no markdown, no extra text:
 }
 
 Requirements:
-- Generate exactly 10 questions
+- Generate exactly ${numberOfQuestions} questions
 - Each question must have 4 options (A, B, C, D)
 - Each question must have exactly one correct answer (A, B, C, or D)
 - Questions should be well-formatted and educational
@@ -110,7 +121,7 @@ Requirements:
       console.log('Raw parsed response:', JSON.stringify(parsedResponse, null, 2));
     }
     
-    const questions = parsedResponse.questions.slice(0, 10).map((q, index) => {
+    const questions = parsedResponse.questions.slice(0, numberOfQuestions).map((q, index) => {
       // Validate question structure
       if (!q.question) {
         console.error(`Question ${index} missing 'question' field:`, q);
@@ -331,4 +342,3 @@ export const getStatistics = async (req, res) => {
     });
   }
 };
-
