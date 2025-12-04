@@ -6,7 +6,8 @@ import { useToast } from '../context/ToastContext';
 function GenerateQuiz() {
   const [formData, setFormData] = useState({
     title: '',
-    description: ''
+    description: '',
+    numberOfQuestions: 10
   });
   const [loading, setLoading] = useState(false);
   const [questions, setQuestions] = useState(null);
@@ -16,9 +17,11 @@ function GenerateQuiz() {
   // ProtectedRoute handles authentication, so we don't need to check here
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
   };
 
@@ -28,11 +31,32 @@ function GenerateQuiz() {
     setQuestions(null);
 
     try {
-      const response = await api.post('/topic/generate', formData);
-      
+      // Validate number on client before sending
+      const num = parseInt(formData.numberOfQuestions, 10) || 10;
+      if (isNaN(num) || num < 1 || num > 20) {
+        showError('Number of questions must be between 1 and 20.');
+        setLoading(false);
+        return;
+      }
+
+      const payload = {
+        title: formData.title,
+        description: formData.description,
+        numberOfQuestions: num
+      };
+
+      const response = await api.post('/topic/generate', payload);
+
       if (response.data.success) {
-        setQuestions(response.data.topic.questions);
-        success('Questions generated successfully!');
+        success('Questions generated successfully! Redirecting to quiz...');
+        // Prefer explicit id field, fallback to _id
+        const topicId = response.data.topic?.id || response.data.topic?._id;
+        if (topicId) {
+          navigate(`/take-quiz/${topicId}`);
+        } else {
+          // As a fallback, display questions on this page
+          setQuestions(response.data.topic.questions);
+        }
       }
     } catch (err) {
       showError(err.response?.data?.message || 'Failed to generate questions. Please try again.');
@@ -80,6 +104,24 @@ function GenerateQuiz() {
                 placeholder="Describe the topic for which you want to generate questions..."
                 disabled={loading}
               />
+            </div>
+
+            <div>
+              <label htmlFor="numberOfQuestions" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Number of Questions
+              </label>
+              <input
+                type="number"
+                id="numberOfQuestions"
+                name="numberOfQuestions"
+                min="1"
+                max="20"
+                value={formData.numberOfQuestions}
+                onChange={handleChange}
+                className="w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                disabled={loading}
+              />
+              <p className="text-xs text-gray-500 mt-1">Choose between 1 and 20 questions.</p>
             </div>
 
             <button
