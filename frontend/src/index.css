@@ -1,10 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --ink: #101314;
+    --canvas: #f7f2ea;
+    --accent: #e85d3f;
+    --accent-2: #2b59c3;
+    --mint: #1a936f;
+    --shadow: rgba(16, 19, 20, 0.12);
+  }
+
   body {
+    font-family: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200;
+  }
+}
+
+@layer components {
+  .font-display {
+    font-family: 'Fraunces', 'Times New Roman', serif;
+  }
+
+  .reveal {
+    animation: reveal 0.8s ease both;
+  }
+
+  .reveal-delayed {
+    animation: reveal 0.9s ease 0.15s both;
+  }
+
+  .float-slow {
+    animation: float 8s ease-in-out infinite;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
   }
 }
 

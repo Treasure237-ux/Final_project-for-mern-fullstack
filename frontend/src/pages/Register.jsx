@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import api from '../utils/axios';
 import { useToast } from '../context/ToastContext';
 import { useAuth } from '../context/AuthContext';
-import Loader from '../components/Loader';
+import BrandIcon from '../components/BrandIcon';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -46,21 +46,28 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-700 dark:to-purple-800 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-10 rounded-lg shadow-2xl">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
-            Create your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-            Or{' '}
-            <Link to="/login" className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500">
-              sign in to your existing account
-            </Link>
-          </p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
+    <div className="relative min-h-screen overflow-hidden bg-[#f7f2ea] dark:bg-gray-950 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="pointer-events-none absolute -top-24 -left-24 h-64 w-64 rounded-full bg-[#d6e5ff] opacity-70 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-0 right-0 h-72 w-72 rounded-full bg-[#ffe1d6] opacity-70 blur-3xl" />
+
+      <div className="relative mx-auto flex min-h-screen max-w-6xl items-center justify-center">
+        <div className="w-full max-w-md rounded-3xl border border-gray-900/10 bg-white/80 p-10 shadow-2xl shadow-[var(--shadow)] backdrop-blur dark:border-gray-700/60 dark:bg-gray-900/70">
+          <div className="text-center">
+            <span className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e85d3f]/10 text-[#e85d3f]">
+              <BrandIcon className="h-6 w-6" />
+            </span>
+            <h2 className="font-display mt-5 text-3xl text-gray-900 dark:text-white">
+              Create your account
+            </h2>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              Or{' '}
+              <Link to="/login" className="font-semibold text-[#2b59c3] hover:text-[#244da8]">
+                sign in to your existing account
+              </Link>
+            </p>
+          </div>
+
+          <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="name" className="sr-only">
                 Name
@@ -70,7 +77,7 @@ function Register() {
                 name="name"
                 type="text"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                className="w-full rounded-2xl border border-gray-900/10 bg-white/90 px-4 py-3 text-sm text-gray-900 placeholder-gray-500 shadow-sm focus:border-[#2b59c3] focus:outline-none focus:ring-2 focus:ring-[#2b59c3]/30 dark:border-gray-700/60 dark:bg-gray-900/80 dark:text-white"
                 placeholder="Full Name"
                 value={formData.name}
                 onChange={handleChange}
@@ -86,7 +93,7 @@ function Register() {
                 type="email"
                 autoComplete="email"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                className="w-full rounded-2xl border border-gray-900/10 bg-white/90 px-4 py-3 text-sm text-gray-900 placeholder-gray-500 shadow-sm focus:border-[#2b59c3] focus:outline-none focus:ring-2 focus:ring-[#2b59c3]/30 dark:border-gray-700/60 dark:bg-gray-900/80 dark:text-white"
                 placeholder="Email address"
                 value={formData.email}
                 onChange={handleChange}
@@ -102,24 +109,22 @@ function Register() {
                 type="password"
                 autoComplete="new-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                className="w-full rounded-2xl border border-gray-900/10 bg-white/90 px-4 py-3 text-sm text-gray-900 placeholder-gray-500 shadow-sm focus:border-[#2b59c3] focus:outline-none focus:ring-2 focus:ring-[#2b59c3]/30 dark:border-gray-700/60 dark:bg-gray-900/80 dark:text-white"
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
               />
             </div>
-          </div>
 
-          <div>
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-2xl bg-[#e85d3f] py-3 text-sm font-semibold text-white shadow-lg shadow-orange-200 transition hover:-translate-y-0.5 hover:bg-[#d54f35] disabled:cursor-not-allowed disabled:opacity-60 dark:shadow-none"
             >
               {loading ? 'Registering...' : 'Register'}
             </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
